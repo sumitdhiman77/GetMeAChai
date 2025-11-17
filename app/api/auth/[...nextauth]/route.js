@@ -1,9 +1,6 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
-import TwitterProvider from "next-auth/providers/twitter";
-import LinkedInProvider from "next-auth/providers/linkedin";
 import User from "@/app/models/User";
 import connectDB, { getConnectionState } from "@/db/connectDb";
 
@@ -14,8 +11,8 @@ export const authoptions = NextAuth({
       clientSecret: process.env.NEXT_PUBLIC_GITHUB_SECRET,
     }),
     GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     // FacebookProvider({
     //   clientId: process.env.FACEBOOK_APP_ID,
