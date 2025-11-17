@@ -51,7 +51,7 @@ const PaymentPage = ({ username }) => {
     const orderId = a.id;
     var options = {
       // options here
-      key: currentUser.razorpayid || process.env.NEXT_PUBLIC_API_KEY, // Enter the Key ID generated from the Dashboard
+      key: currentUser.razorpayid || process.env.RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
       // key: process.env.NEXTPUBLIC_API_KEY, // Enter the Key ID generated from the Dashboard
       amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       currency: "INR",
