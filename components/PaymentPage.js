@@ -89,8 +89,8 @@ const PaymentPage = ({ username }) => {
           <Image
             className="mx-auto "
             src={currentUser.coverpic}
-            width={1200}
-            height={1}
+            // width={1200}
+            // height={1}
             alt="Background-image"
           ></Image>
         </div>
@@ -99,8 +99,8 @@ const PaymentPage = ({ username }) => {
             <Image
               className=" border border-spacing-3 rounded-full"
               src={currentUser.profilepic}
-              width={100}
-              height={120}
+              // width={100}
+              // height={120}
               alt="profile-image"
             ></Image>
           </div>
