@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import User from "@/app/models/User";
-import connectDB, { getConnectionState } from "@/db/connectDb";
+import connectDB from "@/db/connectDb";
 
 export const authoptions = NextAuth({
   providers: [
@@ -15,34 +15,42 @@ export const authoptions = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+
   callbacks: {
     async signIn({ user, profile }) {
       await connectDB();
-      const currentUser = await User.findOne({ email: user.email }).lean();
+      let currentUser = await User.findOne({ email: user.email });
+
       if (!currentUser) {
-        // Create a new user if not found
-        const newUser = await User.create({
+        currentUser = await User.create({
           email: user.email,
           username: user.email.split("@")[0],
-          name: profile.name || user.email.split("@")[0],
+          name: profile?.name || user.email.split("@")[0],
         });
-      } else {
-        user.name = currentUser.username;
       }
+
+      user.id = currentUser._id.toString();
+      user.username = currentUser.username;
+
       return true;
     },
-    async session({ session, token, user }) {
-      const dbUser = await User.findOne({ email: session.user.email }).lean();
-      if (dbUser) {
-        session.user.name = dbUser.username;
-        session.user.id = dbUser._id; // Example: Add user ID to session
-      } else {
-        session.user.name = user.name; // Fallback
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.username = user.username;
       }
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.name = token.username;
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+
+  secret: process.env.NEXTAUTH_SECRET, // FIXED
 });
 
 export { authoptions as GET, authoptions as POST };
