@@ -7,25 +7,13 @@ import connectDB, { getConnectionState } from "@/db/connectDb";
 export const authoptions = NextAuth({
   providers: [
     GitHubProvider({
-      clientId: process.env.NEXT_PUBLIC_GITHUB_ID,
-      clientSecret: process.env.NEXT_PUBLIC_GITHUB_SECRET,
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    // FacebookProvider({
-    //   clientId: process.env.FACEBOOK_APP_ID,
-    //   clientSecret: process.env.FACEBOOK_APP_SECRET,
-    // }),
-    // TwitterProvider({
-    //   clientId: process.env.TWITTER_CLIENT_ID,
-    //   clientSecret: process.env.TWITTER_CLIENT_SECRET,
-    // }),
-    // LinkedInProvider({
-    //   clientId: process.env.LINKEDIN_CLIENT_ID,
-    //   clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-    // }),
   ],
   callbacks: {
     async signIn({ user, profile }) {
