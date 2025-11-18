@@ -87,22 +87,22 @@ const PaymentPage = ({ username }) => {
         {username}
         <div className="relative">
           <Image
-            className="mx-auto "
-            src={currentUser.coverpic}
-            // width={1200}
-            // height={1}
-            alt="Background-image"
-          ></Image>
+  src={currentUser.coverpic}
+  width={1200}
+  height={350}
+  alt="Cover Image"
+  className="mx-auto"
+/>
         </div>
         <div className=" profile text-center">
           <div className="profile absolute top-[17rem] left-[39rem] md:top-[14rem] md:left-[39rem] lg:left-[39rem] lg:top-[21rem] text-gray-500 text-sm text-wrap">
-            <Image
-              className=" border border-spacing-3 rounded-full"
-              src={currentUser.profilepic}
-              // width={100}
-              // height={120}
-              alt="profile-image"
-            ></Image>
+           <Image
+  src={currentUser.profilepic}
+  width={150}
+  height={150}
+  alt="Profile Image"
+  className="rounded-full border"
+/>
           </div>
           <div className="mt-10 text-gray-500 text-sm">
             <p className="font-bold ">lets help {username} to get a chai</p>
