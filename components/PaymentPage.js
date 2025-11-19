@@ -67,13 +67,14 @@ const PaymentPage = ({ username }) => {
             alt="Cover"
             className="w-full h-72 object-cover opacity-90"
           />
-          <Image
-            src={currentUser.profilepic}
-           alt="profile pic"
-  width={512}
-  height={512}
-  className="rounded-full object-cover border-4 border-white absolute left-1/2 -translate-x-1/2 -bottom-14 shadow-xl"
-          />
+         <Image
+className="rounded-full mx-auto border-2 border-cyan-400 object-cover"
+  src="https://i.ibb.co/vVbqk1G/anime-dev-profile-A3.png"
+  alt="profile-image"
+  width={130}
+  height={130}
+/>
+
         </div>
 
         <div className="pt-20 text-center">
