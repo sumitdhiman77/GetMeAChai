@@ -65,7 +65,7 @@ const PaymentPage = ({ username }) => {
             width={1600}
             height={400}
             alt="Cover"
-            className="w-full h-72 object-cover opacity-90"
+            className="w-full h-full object-cover opacity-90"
           />
          <Image
   src={currentUser.profilepic}
