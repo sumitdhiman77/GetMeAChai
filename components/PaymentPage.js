@@ -60,13 +60,23 @@ const PaymentPage = ({ username }) => {
       <div className="pb-16 bg-[#0c0f1a] min-h-screen text-white">
         {/* COVER */}
         <div className="relative">
-          <Image
-            src={currentUser.coverpic}
-            width={1600}
-            height={400}
-            alt="Cover"
-            className="w-full h-full object-cover opacity-90"
-          />
+          // <Image
+          //   src={currentUser.coverpic}
+          //   width={1600}
+          //   height={400}
+          //   alt="Cover"
+          //   className="w-full h-full object-cover opacity-90"
+          // />
+    <div className="relative w-full h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] xl:h-[500px]">
+  <Image
+    src={currentUser.coverpic}
+    alt="Cover Image"
+    fill
+    className="object-cover w-full h-full"
+    priority
+  />
+</div>
+
          <Image
   src={currentUser.profilepic}
 className="rounded-full mx-auto border-2 border-cyan-400 object-cover"
