@@ -1,200 +1,155 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Script from "next/script";
-import { useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { fetchUser, fetchPayments, initiate } from "@/actions/useractions";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/navigation";
+
 const PaymentPage = ({ username }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [paymentForm, setPaymentForm] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [payments, setPayments] = useState([]);
-  const searchParams = useSearchParams();
   const router = useRouter();
+  const sp = useSearchParams();
+
   useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    if (searchParams.get("paymentdone") == "true") {
-      toast("thanks for donation!", {
-        position: "top-right",
-        autoClose: 1000,
-        limit: 1,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: "bounce",
-        draggable: true,
+    loadData();
+    if (sp.get("paymentdone") === "true") {
+      toast.success("Thanks for the donation ❤️", {
+        autoClose: 1500,
       });
     }
-    router.push(`/${username}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loadData = async () => {
+    const u = await fetchUser(username);
+    setCurrentUser(u);
+    const p = await fetchPayments(username);
+    setPayments(p);
+  };
+
   const handleChange = (e) => {
     setPaymentForm({ ...paymentForm, [e.target.name]: e.target.value });
   };
-  const getData = async () => {
-    let u = await fetchUser(username);
-    setCurrentUser(u);
-    const dbPayments = await fetchPayments(username);
-    setPayments(dbPayments);
-  };
+
   const pay = async (amount) => {
-    const a = await initiate(amount, username, paymentForm);
-    const orderId = a.id;
-    var options = {
-      // options here
-      key: currentUser.razorpayid || process.env.RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
-      // key: process.env.NEXTPUBLIC_API_KEY, // Enter the Key ID generated from the Dashboard
-      amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    const order = await initiate(amount, username, paymentForm);
+
+    const rzp = new Razorpay({
+      key: currentUser.razorpayid,
+      amount,
       currency: "INR",
-      name: "Get Me A Chai", //your business name
-      description: "Test Transaction",
-      image: "https://example.com/your_logo",
-      order_id: orderId, //This is a sample Order ID. Pass the `id` obtained in the "response of Step 1
+      name: "GetMeAChai",
+      order_id: order.id,
       callback_url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/razorpay`,
-      prefill: {
-        //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-        name: "Gaurav Kumar", //your customer's name
-        email: "gaurav.kumar@example.com",
-        contact: "9000090000",
-        //Provide the customer's phone number for better conversion rates
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-    var rzp1 = new Razorpay(options);
-    rzp1.open();
+      theme: { color: "#00e0ff" },
+    });
+
+    rzp.open();
   };
 
   return (
     <>
-      <ToastContainer limit={1} draggable />
-      <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+      <ToastContainer />
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
-      <div>
-        {username}
+      <div className="pb-16 bg-[#0c0f1a] min-h-screen text-white">
+        {/* COVER */}
         <div className="relative">
           <Image
-  src={currentUser.coverpic}
-  width={1200}
-  height={350}
-  alt="Cover Image"
-  className="mx-auto"
-/>
+            src={currentUser.coverpic}
+            width={1600}
+            height={400}
+            alt="Cover"
+            className="w-full h-72 object-cover opacity-90"
+          />
+          <Image
+            src={currentUser.profilepic}
+            width={120}
+            height={120}
+            alt="Profile"
+            className="rounded-full border-4 border-white absolute left-1/2 -translate-x-1/2 -bottom-14 shadow-xl"
+          />
         </div>
-        <div className=" profile text-center">
-          <div className="profile absolute top-[17rem] left-[39rem] md:top-[14rem] md:left-[39rem] lg:left-[39rem] lg:top-[21rem] text-gray-500 text-sm text-wrap">
-           <Image
-  src={currentUser.profilepic}
-  width={150}
-  height={150}
-  alt="Profile Image"
-  className="rounded-full border"
-/>
-          </div>
-          <div className="mt-10 text-gray-500 text-sm">
-            <p className="font-bold ">lets help {username} to get a chai</p>
-            <p>
-              {payments.length} Payments. ₹
-              {payments.reduce((a, b) => a + b.amount, 0)} raised
-            </p>
-          </div>
+
+        <div className="pt-20 text-center">
+          <h2 className="font-bold text-xl text-cyan-400">
+            Let’s help {username} get a chai ☕
+          </h2>
+          <p className="text-gray-300 mt-1">
+            {payments.length} supporters • ₹
+            {payments.reduce((a, b) => a + b.amount, 0)} raised 🎉
+          </p>
         </div>
-        <div className="bg-blue-700 supporters-payment w-[80%] grid gap-2 mt-5  grid-cols-none mx-auto md:grid-cols-2">
-          <div className="supporters text-white p-10 bg-slate-900 text-center">
-            <h2 className="mb-4 font-semibold"> Supporters</h2>
-            <ul>
-              {payments.map((p, i) => {
-                return (
-                  <li key={i} className="mb-2">
-                    <span>
-                      {p.name} donated{" "}
-                      <span className="font-bold">{p.amount}</span> with a
-                      message {p.message}
-                    </span>
-                  </li>
-                );
-              })}
+
+        {/* CONTENT GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-[90%] md:w-[70%] mx-auto mt-10">
+
+          {/* Supporters */}
+          <div className="bg-[#121522] p-6 rounded-xl shadow-lg">
+            <h3 className="font-semibold text-lg mb-4 text-cyan-400">Supporters</h3>
+            <ul className="space-y-2">
+              {payments.length === 0 && (
+                <p className="text-gray-500">No supporters yet!</p>
+              )}
+              {payments.map((p, index) => (
+                <li key={index} className="bg-[#1b1f2e] p-2 rounded-lg">
+                  <strong>{p.name}</strong> donated ₹{p.amount}
+                  <p className="text-sm text-gray-400">{p.message}</p>
+                </li>
+              ))}
             </ul>
           </div>
-          <div className="payment p-10 bg-slate-900 text-center">
-            <h2> Make a Payment</h2>
 
-            <div>
-              <input
-                onChange={handleChange}
-                value={paymentForm.name}
-                name="name"
-                type="text"
-                id="name"
-                className="w-full p-3 mb-1 rounded-lg bg-slate-800"
-                placeholder="Enter Name"
-                required
-              />
+          {/* Payment Form */}
+          <div className="bg-[#121522] p-6 rounded-xl shadow-lg">
+            <h3 className="font-semibold text-lg mb-4 text-cyan-400">Make a Payment</h3>
 
-              <input
-                onChange={handleChange}
-                value={paymentForm.message}
-                name="message"
-                type="text"
-                id="message"
-                className="w-full p-3 mb-1 rounded-lg bg-slate-800"
-                placeholder="Enter Message"
-                required
-              />
-              <input
-                onChange={handleChange}
-                value={paymentForm.amount}
-                name="amount"
-                type="number"
-                id="amount"
-                className="w-full p-3 mb-3 rounded-lg bg-slate-800"
-                placeholder="Enter Amount"
-                required
-              />
-            </div>
+            <input
+              name="name"
+              onChange={handleChange}
+              placeholder="Your Name"
+              className="w-full p-3 mb-2 bg-[#1b1f2e] rounded-md"
+            />
+
+            <input
+              name="message"
+              onChange={handleChange}
+              placeholder="Message"
+              className="w-full p-3 mb-2 bg-[#1b1f2e] rounded-md"
+            />
+
+            <input
+              name="amount"
+              type="number"
+              onChange={handleChange}
+              placeholder="Amount (₹)"
+              className="w-full p-3 mb-4 bg-[#1b1f2e] rounded-md"
+            />
+
             <button
-              onClick={() => pay(Number.parseInt(paymentForm.amount) * 100)}
-              className={`w-full p-3 rounded-lg ${
-                paymentForm?.amount < 9
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-cyan-400"
-              }`}
-              disabled={paymentForm?.amount < 9}
+              onClick={() => pay(paymentForm.amount * 100)}
+              disabled={!paymentForm?.amount}
+              className="w-full p-3 rounded-md bg-cyan-400 font-bold text-black disabled:bg-gray-500"
             >
-              Pay
+              Pay Now 💸
             </button>
-            <div className="flex mt-4 ">
-              <button
-                className="bg-slate-800 py-2 px-1 text-sm  mr-4"
-                onClick={() => pay(1000)}
-              >
-                pay ₹10
-              </button>
-              <button
-                className="bg-slate-800 py-2 px-1  text-sm mr-4"
-                onClick={() => pay(2000)}
-              >
-                pay ₹20
-              </button>
-              <button
-                className="bg-slate-800 py-2 px-1  text-sm mr-4"
-                onClick={() => pay(3000)}
-              >
-                pay ₹50
-              </button>
+
+            {/* Quick Pay */}
+            <div className="flex justify-center gap-3 mt-4">
+              {[10, 20, 50].map((amt) => (
+                <button
+                  key={amt}
+                  onClick={() => pay(amt * 100)}
+                  className="py-2 px-3 text-sm bg-[#1b1f2e] rounded-md hover:bg-cyan-400 hover:text-black"
+                >
+                  ₹{amt}
+                </button>
+              ))}
             </div>
           </div>
         </div>
