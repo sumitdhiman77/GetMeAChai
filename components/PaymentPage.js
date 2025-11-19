@@ -57,24 +57,16 @@ const PaymentPage = ({ username }) => {
       <ToastContainer />
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
-      // <div className="pb-16 bg-[#0c0f1a] min-h-screen text-white">
-    <div className="relative w-full h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] xl:h-[500px]">
+      <div className="pb-16 bg-[#0c0f1a] min-h-screen text-white">
         {/* COVER */}
         <div className="relative">
-          // <Image
-          //   src={currentUser.coverpic}
-          //   width={1600}
-          //   height={400}
-          //   alt="Cover"
-          //   className="w-full h-full object-cover opacity-90"
-          // />
-  <Image
-    src={currentUser.coverpic}
-    alt="Cover Image"
-    fill
-    className="object-cover w-full h-full"
-    priority
-  />
+          <Image
+            src={currentUser.coverpic}
+            width={1600}
+            height={400}
+            alt="Cover"
+            className="w-full h-35 object-cover opacity-90"
+          />
 </div>
 
          <Image
