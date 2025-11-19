@@ -60,7 +60,7 @@ const PaymentPage = ({ username }) => {
       <div className="bg-[#06080f] min-h-screen text-white pb-20">
         
         {/* FULL SCREEN COVER */}
-        <div className="relative w-full h-[45vh] md:h-[55vh]">
+        <div className="relative w-full h-72 md:h-[55vh]">
           <Image
             src={currentUser.coverpic}
             alt="Cover"
