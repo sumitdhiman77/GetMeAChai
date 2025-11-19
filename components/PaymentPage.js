@@ -69,10 +69,10 @@ const PaymentPage = ({ username }) => {
           />
           <Image
             src={currentUser.profilepic}
-            width={120}
-            height={120}
-            alt="Profile"
-            className="rounded-full border-4 border-white absolute left-1/2 -translate-x-1/2 -bottom-14 shadow-xl"
+           alt="profile pic"
+  width={512}
+  height={512}
+  className="rounded-full object-cover border-4 border-white absolute left-1/2 -translate-x-1/2 -bottom-14 shadow-xl"
           />
         </div>
 
